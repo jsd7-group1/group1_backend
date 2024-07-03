@@ -38,4 +38,99 @@ app.get("/", (req, res) => {
   res.json({ data: "respond received from the server!" });
 });
 
+///###################  PARTY  //#########################
+// -------- GET USER --------
+app.get("/get-user", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+  const isUser = await User.findOne({ _id: user._id });
+
+  if (!isUser) {
+    return res.sendstatus(401);
+  }
+
+  return res.json({
+    user: isUser,
+    message: "",
+  });
+});
+
+// -------- POST LOGIN --------
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  if (!password) {
+    return res.status(400).json({ message: "Password is required" });
+  }
+
+  const userInfo = await User.findOne({ email: email });
+
+  if (!userInfo) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  if (userInfo.email === email && userInfo.password === password) {
+    const user = { user: userInfo };
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "36000m",
+    });
+
+    return res.json({
+      error: false,
+      message: "Login Successful",
+      email,
+      accessToken,
+    });
+  } else {
+    return res.status(400).json({
+      error: true,
+      message: "Invalid Credentials",
+    });
+  }
+});
+
+// -------- POST REGISTER --------
+app.post("/create-account", async (req, res) => {
+  const { fullName, email, password } = req.body; //deconstruct ข้อมูลที่ user ใส่มา
+  //Validate ว่าข้อมูลมาหรือเปล่า
+  if (!fullName) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Full name is required" });
+  }
+  if (!email) {
+    return res.status(400).json({ error: true, message: "Email is required" });
+  }
+  if (!password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Password is required" });
+  }
+  const isUser = await User.findOne({ email: email });
+  if (isUser) {
+    return res.json({
+      error: true,
+      message: "User already exists",
+    });
+  }
+  const user = new User({
+    fullName,
+    email,
+    password,
+  });
+  await user.save();
+  const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "36000m",
+  });
+  return res.json({
+    error: false,
+    user,
+    accessToken,
+    message: "Registration Successful",
+  });
+});
+
 module.exports = app;
