@@ -1,25 +1,4 @@
 {
-<<<<<<< HEAD
-    "name": "project-backend",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "nodemon index.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      "cors": "^2.8.5",
-      "dotenv": "^16.4.5",
-      "express": "^4.18.2",
-      "jsonwebtoken": "^9.0.2",
-      "mongoose": "^8.2.0",
-      "nodemon": "^3.1.0"
-    }
-}
-=======
   "name": "potioncafe-backend",
   "version": "1.0.0",
   "description": "",
@@ -39,4 +18,3 @@
     "nodemon": "^3.1.0"
   }
 }
->>>>>>> 0bf91408269047fb838d9be8485cbae6a3c8ece3

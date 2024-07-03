@@ -1,15 +1,5 @@
 require("dotenv").config();
 
-<<<<<<< HEAD
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI);
-mongoose.connection.on('connected',()=>{
-    console.log('Connected to MongoDB 🔌😎')
-});
-
-const Products = require('./models/product.model.js');
-const Users = require('./models/user.model.js')
-=======
 // set up mongoose connection to MongoDB
 const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGO_URI);
@@ -49,4 +39,3 @@ app.get("/", (req, res) => {
 });
 
 module.exports = app;
->>>>>>> 0bf91408269047fb838d9be8485cbae6a3c8ece3
