@@ -1,7 +1,10 @@
+import user from "models/user.model.js";
+import NotFoundError from "../error/NotFoundError.js";
+
 //########## API - 1 Get All Users //##########
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await userService.getUsers();
+    const users = await user.getUsers();
     res.status(200).json({ message: "Get All Users", data: users });
   } catch (error) {
     next(error);
@@ -11,7 +14,7 @@ const getAllUsers = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await userService.getUserById(Number(id));
+    const user = await user.getUserById(Number(id));
     if (!user) {
       throw new NotFoundError(`User with id ${id} not found`);
     }
