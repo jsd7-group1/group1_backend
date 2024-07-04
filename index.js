@@ -17,6 +17,37 @@ const Order = require("./models/order.model");
 const OrderDetails = require("./models/orderDetails.model");
 const Category = require("./models/category.model");
 
+// test adding instance of the user model and save to the db
+// let test = new User({
+//   userID: "60d73b3f6a2b3c002d9e5c9f",
+//   email: "whiskers.the.cat@example.com",
+//   fullName: "Whiskers The Cat",
+//   password: "hashed_password_here",
+//   imageUrl: "https://media.tenor.com/dimT0JAAMb4AAAAM/cat-cute.gif",
+//   status: 1,
+//   isDelete: false,
+//   createdByUserID: "60d73b3f6a2b3c002d9e5c9e",
+//   dateCreated: "2023-06-15T08:00:00Z",
+//   modifiedByUserID: "60d73b3f6a2b3c002d9e5c9e",
+//   dateModified: "2024-07-04T12:00:00Z",
+//   companyID: 101,
+//   isActive: true,
+//   userType: 2,
+// });
+
+// test.save().then((doc) => {
+//   console.log(doc);
+// })
+// .catch((err) => {
+//   console.error(err);
+// })
+
+// User.find({
+//   userID : "60d73b3f6a2b3c002d9e5c9f"
+// }).then((doc) => {
+//   console.log(doc);
+// })
+
 // set up express app and cors
 const express = require("express");
 const cors = require("cors");
