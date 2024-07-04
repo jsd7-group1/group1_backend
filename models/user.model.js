@@ -1,21 +1,65 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose");
 
-
-const userSchema = new Schema({
-  userID: { type: String, required: true },
-  email: { type: String, required: true },
-  fullName: { type: String, required: true },
-  password: { type: String, required: true },
-  imageUrl: { type: String },
-  status: { type: Number, required: true },
-  isDelete: { type: Boolean, required: true },
-  createByUserID: { type: String, required: true },
-  dateCreate: { type: Date },
-  modifyByUserID: { type: String },
-  dateModified: { type: Date, required: true },
-  companyID: { type: Number, required: true },
-  isActive: { type: Boolean, required: true },
-  userType: { type: Number, required: true }
+const userSchema = new mongoose.Schema({
+  userID: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    maxlength: 255,
+  },
+  fullName: {
+    type: String,
+    required: true,
+    maxlength: 100,
+  },
+  password: {
+    type: String,
+    required: true,
+    maxlength: 255,
+  },
+  imageUrl: {
+    type: String,
+    maxlength: 255,
+  },
+  status: {
+    type: Number,
+    required: true,
+  },
+  isDelete: {
+    type: Boolean,
+    required: true,
+  },
+  createdByUserID: {
+    type: String,
+    maxlength: 128,
+  },
+  dateCreated: {
+    type: Date,
+  },
+  modifiedByUserID: {
+    type: String,
+    maxlength: 50,
+  },
+  dateModified: {
+    type: Date,
+  },
+  companyID: {
+    type: Number,
+    required: true,
+  },
+  isActive: {
+    type: Boolean,
+    required: true,
+  },
+  userType: {
+    type: Number,
+    required: true,
+  },
 });
-module.exports = mongoose.model('User', userSchema);
+
+const User = mongoose.model("User", userSchema);
+module.exports = User;
