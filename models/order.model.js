@@ -1,52 +1,18 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const orderSchema = new mongoose.Schema({
-  userID: {
-    type: String,
-    required: true,
-    ref: "User",
-  },
-  orderID: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  customerName: {
-    type: String,
-    required: true,
-    maxlength: 100,
-  },
-  subTotal: {
-    type: Number,
-    required: true,
-  },
-  vat: {
-    type: Number,
-    required: true,
-  },
-  purchaseDate: {
-    type: Date,
-    required: true,
-  },
-  createdBy: {
-    type: Number,
-    required: true,
-  },
-  modifiedBy: {
-    type: Number,
-  },
-  shippingAddress: {
-    type: String,
-    maxlength: 255,
-  },
-  contact: {
-    type: String,
-    maxlength: 255,
-  },
-  zipCode: {
-    type: Number,
-  },
+const orderSchema = new Schema({
+  userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  orderID: { type: Number, required: true, unique: true },
+  customerName: { type: String, required: true },
+  subTotal: { type: Schema.Types.Decimal128, required: true },
+  vat: { type: Schema.Types.Decimal128, required: true },
+  purchaseDate: { type: Date, required: true },
+  createdBy: { type: Number, required: true },
+  modifiedBy: { type: Number, required: false },
+  shippingAddress: { type: String, required: true },
+  contact: { type: String, required: true },
+  zipCode: { type: Number, required: true },
 });
 
-const Order = mongoose.model("Order", orderSchema);
-module.exports = Order;
+module.exports = mongoose.model("Order", orderSchema);
