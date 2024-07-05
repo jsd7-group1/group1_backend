@@ -80,4 +80,4 @@ const addToCart = async (req,res,next)=>{
     }
 }
 
-export { addToCart, getAllProduct, getProductByCategory };
+export { getAllProduct, getProductByCategory,  addToCart };
