@@ -7,7 +7,7 @@ import OrderDetail from '../../models/orderDetails.model.js';
 const getAllProduct = async (req,res,next)=>{
     try {
         const products = await Product.find();
-        res.status(200).json({ message: "Get all product ",products});
+        res.status(200).json(products);
     } catch (error) {
         next(error)
     }
@@ -17,7 +17,7 @@ const getAllProduct = async (req,res,next)=>{
 const getProductByCategory = async (req,res,next)=>{
     try {
         const products = await Product.find({ catagoryID : catagoryID})
-        return products;
+        res.status(200).json(products)
 
     } catch (error) {
         next(error)
@@ -64,7 +64,7 @@ const addToCart = async (req,res,next)=>{
         await orderDetail.save();
 
         const orderDetails = await OrderDetail.find({ orderID: order._id}).populate('productID');
-        res.json({ order, 
+        res.status(201).json({ order, 
             orderDetails: orderDetails.map(detail =>({
                 productID: detail.productID._id,
                 productName: detail.productID.productName,
