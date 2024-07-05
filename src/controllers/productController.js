@@ -1,4 +1,4 @@
-import NotFoundError from '../error/NotFoundError';
+import NotFoundError from '../error/NotFoundError.js';
 import Product from '../../models/product.model.js';
 import Order from '../../models/order.model.js';
 import OrderDetail from '../../models/orderDetails.model.js';
