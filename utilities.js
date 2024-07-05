@@ -1,9 +1,8 @@
-// use JWT authentication to create, sign and verify tokens
-const jwt = require("jsonwebtoken");
+import jwt from 'jsonwebtoken';
 
 // define the middleware function that has access to the request object,
 // the response object, and the next middleware function in the app's request-response cycle.
-function authenticateToken(req, res, next) {
+export function authenticateToken(req, res, next) {
   // retrieve the authorization header from the incoming request.
   // The authorization header contains the word Bearer followed by the token.
   const authHeader = req.headers["authorization"];
@@ -24,8 +23,3 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
-// export the authenticateToken to be used in route definitions to protect certain endpoints
-module.exports = {
-  authenticateToken,
-};
