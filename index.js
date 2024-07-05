@@ -9,7 +9,7 @@ const productRoute = require("./src/routes/productRoute.js");
 const errorMiddleware = require("./src/middleware/errorMiddleware.js");
 
 // Set up mongoose connection to MongoDB
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,11 +19,11 @@ mongoose.connection.on("connected", () => {
 });
 
 // Use the mongoose models
-const User = require("./models/user.model");
-const Product = require("./models/product.model");
-const Order = require("./models/order.model");
-const OrderDetails = require("./models/orderDetails.model");
-const Category = require("./models/category.model");
+import User from "./models/User.model.js";
+import Product from "./models/Product.model.js";
+import Order from "./models/Order.model.js";
+import OrderDetails from "./models/OrderDetails.model.js";
+import Category from "./models/Category.model.js";
 
 // test adding instance of the user model and save to the db
 // let test = new User({
@@ -61,8 +61,8 @@ const PORT = process.env.PORT || 8081;
 const app = express();
 
 // use jwt and token to authenticate access to protected routes
-const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities");
+import jwt from "jsonwebtoken";
+import { authenticateToken } from "./utilities.js";
 
 app.use(express.json());
 app.use(
