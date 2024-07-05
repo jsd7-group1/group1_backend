@@ -1,22 +1,22 @@
-require("dotenv").config();
-// set up express app and cors
-const express = require("express");
-const cors = require("cors");
-
-// import routes
-const orderRoute = require("./src/routes/orderRoute.js")
-const productRoute = require("./src/routes/productRoute.js");
-const errorMiddleware = require("./src/middleware/errorMiddleware.js");
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Set up mongoose connection to MongoDB
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-mongoose.connection.on("connected", () => {
-  console.log("Connected to MongoDB 🥭");
+mongoose.connection.on('connected', () => {
+  console.log('Connected to MongoDB 🥭');
 });
+
+// Use the mongoose models
+import User from './models/User.model.js';
+import Product from './models/Product.model.js';
+import Order from './models/Order.model.js';
+import OrderDetails from './models/OrderDetails.model.js';
+import Category from './models/Category.model.js';
 
 // test adding instance of the user model and save to the db
 // let test = new User({
@@ -49,6 +49,12 @@ mongoose.connection.on("connected", () => {
 //   console.log(doc);
 // })
 
+// set up express app and cors
+import express from 'express';
+import cors from 'cors';
+import Joi from 'joi';
+
+import { registerSchema, loginSchema, productSchema, orderDetailsSchema } from './src/utils/validation.js';
 
 const PORT = process.env.PORT || 8081;
 const app = express();
