@@ -1,12 +1,16 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 // set up express app and cors
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 // import routes
-const orderRoute = require("./src/routes/orderRoute.js")
-const productRoute = require("./src/routes/productRoute.js");
-const errorMiddleware = require("./src/middleware/errorMiddleware.js");
+import orderRoute from "./src/routes/orderRoute.js";
+import productRoute from "./src/routes/productRoute.js";
+import errorMiddleware from "./src/middleware/errorMiddleware.js";
+// const orderRoute = require("./src/routes/orderRoute.js")
+// const productRoute = require("./src/routes/productRoute.js");
+// const errorMiddleware = require("./src/middleware/errorMiddleware.js");
 
 // Set up mongoose connection to MongoDB
 import mongoose from "mongoose";
@@ -159,4 +163,4 @@ app.listen(PORT, () => {
 //     }
 //   }
 // );
-module.exports = app;
+export default app;
