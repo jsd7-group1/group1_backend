@@ -18,13 +18,6 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB 🥭");
 });
 
-// Use the mongoose models
-import User from "./models/User.model.js";
-import Product from "./models/Product.model.js";
-import Order from "./models/Order.model.js";
-import OrderDetails from "./models/OrderDetails.model.js";
-import Category from "./models/Category.model.js";
-
 // test adding instance of the user model and save to the db
 // let test = new User({
 //   userID: "60d73b3f6a2b3c002d9e5c9f",
@@ -79,6 +72,8 @@ app.use('/api/products', productRoute);
 app.use('/api/orders', orderRoute);
 
 app.use(errorMiddleware);
+
+
 // start the Express server
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} ☕️`);
