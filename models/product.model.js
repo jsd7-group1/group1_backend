@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
+
 const { Schema } = mongoose;
 
 const productSchema = new Schema({
@@ -13,4 +14,5 @@ const productSchema = new Schema({
   isFeatured: { type: Number, required: true },
 });
 
-module.exports = mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema);
+export default Product;

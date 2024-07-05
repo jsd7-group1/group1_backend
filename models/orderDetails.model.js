@@ -1,7 +1,8 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
+
 const { Schema } = mongoose;
 
-const orderDetailSchema = new Schema({
+const orderDetailsSchema = new Schema({
   orderID: { type: Schema.Types.ObjectId, ref: "Order", required: true },
   productID: { type: Schema.Types.ObjectId, ref: "Product", required: true },
   productName: { type: String, required: true },
@@ -10,4 +11,5 @@ const orderDetailSchema = new Schema({
   vat: { type: Number, required: true },
 });
 
-module.exports = mongoose.model("OrderDetail", orderDetailSchema);
+const OrderDetails = mongoose.model('OrderDetails', orderDetailsSchema);
+export default OrderDetails;
