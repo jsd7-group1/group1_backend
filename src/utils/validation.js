@@ -1,6 +1,8 @@
 import Joi from 'joi';
 
-const userIDSchema = Joi.string().pattern(/^[0-9a-fA-F]{24}$/);
+const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+
+const userIDSchema = Joi.string().pattern(objectIdPattern);
 
 const registerSchema = Joi.object({
   userID: userIDSchema.required(),
@@ -45,4 +47,4 @@ const orderDetailsSchema = Joi.object({
   vat: Joi.number().required(),
 });
 
-export { registerSchema, loginSchema, productSchema, orderDetailsSchema };
+export { registerSchema, loginSchema, productSchema, orderDetailsSchema, userIDSchema };
