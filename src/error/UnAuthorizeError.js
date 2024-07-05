@@ -5,5 +5,5 @@ class UnAuthorizeError extends Error {
       this.name = 'UnAuthenticateError';
     }
   }
-  
+
   export default UnAuthorizeError;

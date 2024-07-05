@@ -5,5 +5,5 @@ class InternalServerError extends Error {
       this.status = 500;
     }
   }
-  
+
   export default InternalServerError;
