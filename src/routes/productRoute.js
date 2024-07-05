@@ -8,9 +8,9 @@ const router = express.Router();
 router.get('/products', ProductController.getAllProduct);
 
 //API Get product by category
-router.get('/prodcuts/category', ProductController.getProductByCategory);
+router.get('/products/category/:categoryID', ProductController.getProductByCategory);
 
 //API add product to orders
-router.post('/add-to-cart', authenticateMiddleware, ProductController.addToCart);
+router.post('/products/:productID', authenticateMiddleware, ProductController.addToCart);
 
 export default router;

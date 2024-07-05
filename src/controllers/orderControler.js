@@ -3,8 +3,19 @@ import orderDetail from '../../models/orderDetails.model.js';
 import Product from '../../models/product.model.js'
 import NotFoundError from '../error/NotFoundError.js';
 
+
+// Get order
+const getOrder = async(req,res,next)=>{
+    try {
+        const orders = await Order.find();
+        res.status(200).json(orders)
+    } catch (error) {
+        next(error)
+    }
+};
+
 // Get Order by UserID
-const getOrderByUserID = async(req,res,next)=>{
+const getOrderByID = async(req,res,next)=>{
     try {
         const { userID } = req.params;
         const orders = await Order.findOne({ userID: userID});
@@ -21,8 +32,7 @@ const getOrderByUserID = async(req,res,next)=>{
 // Delete Product from order
 const deleteProductFromOrder = async(req,res,next)=>{
     try {
-        const orderID = req.params.orderID;
-        const productID = req.params.productID;
+        const {orderID, productID} = req.params;
         if(!orderID){
             return next(new NotFoundError('Order not found!'))
         }
@@ -30,7 +40,7 @@ const deleteProductFromOrder = async(req,res,next)=>{
         if(!orderDetail){
             return next(new NotFoundError('Product not found!'))
         }
-        await orderDetail.findByIdAndDelete(orderDetails._id)
+        await orderDetail.findByIdAndDelete(orderDetail._id)
         const updateOrder = await Order.findById(orderID).populate({
             path: 'orderDetails',
             populate: { path: 'productID'}
@@ -42,4 +52,4 @@ const deleteProductFromOrder = async(req,res,next)=>{
     }
 };
 
-export { getOrderByUserID, deleteProductFromOrder};
+export {getOrder, getOrderByID, deleteProductFromOrder};
