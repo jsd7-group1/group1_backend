@@ -118,10 +118,10 @@ app.post("/login", async (req, res) => {
   });
 });
 
-// app.get("/users", async (req, res) => {
-//   console.log(req.body);
-//   // res.json('hii')
-// });
+app.get("/users", async (req, res) => {
+  console.log(req.body);
+  // res.json('hii')
+});
 
 app.get("/products", authenticateToken, async (req, res) => {
   const { user } = req.user;

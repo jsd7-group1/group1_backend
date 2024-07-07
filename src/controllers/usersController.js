@@ -1,4 +1,4 @@
-import user from "models/user.model.js";
+import user from "../../models/user.model.js";
 import NotFoundError from "../error/NotFoundError.js";
 
 //########## API - 1 Get All Users //##########
