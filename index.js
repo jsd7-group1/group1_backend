@@ -6,6 +6,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 
 // import routes
+import useRoute from "./src/routes/usersRoute.js";
 import orderRoute from "./src/routes/orderRoute.js";
 import productRoute from "./src/routes/productRoute.js";
 import errorMiddleware from "./src/middleware/errorMiddleware.js";
@@ -74,8 +75,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/products", productRoute);
 app.use("/api/orders", orderRoute);
-
-app.use(errorMiddleware);
+app.use("/api/users", useRoute);
 
 // API EndPoint
 app.post("/register", async (req, res) => {
@@ -201,11 +201,12 @@ app.delete(
   }
 );
 
+app.use(errorMiddleware);
+
 // start the Express server
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} ☕️`);
 });
-
 
 // app.post("/register", async (req, res) => {});
 // app.post("/login", async (req, res) => {});
