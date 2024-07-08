@@ -19,7 +19,10 @@ const registerController = async (req, res, next) => {
     } = req.body;
 
     // Validation
-    if (!email) return res.status(400).json({ message: "email is required" });
+    if (!email) {
+      // return res.status(400).json({ message: "email is required" });
+      throw Error("email is requrired!");
+    }
     if (!email.includes("@"))
       return res.status(400).json({ message: "invalid email" });
     if (!fullName)
@@ -43,7 +46,6 @@ const registerController = async (req, res, next) => {
     const hashedPassword = await hashPassword(password);
 
     // 4.สร้าง User
-
     const user = await User.create({
       fullName: fullName,
       email: email,
@@ -72,25 +74,30 @@ const registerController = async (req, res, next) => {
       access_token: accessToken,
     });
   } catch (error) {
-    next(error);
+    console.log("Error", error);
+    res.status(400).send(error.meesage);
   }
 };
 
 // Login
 const loginController = async (req, res) => {
-  console.log(req.body.email);
-  if (!req.body.email)
-    return res.status(400).json({ message: "email is required" });
-  if (!req.body.email.includes("@"))
-    return res.status(400).json({ message: "invalid email" });
-  if (!req.body.password)
-    return res.status(400).json({ message: "password is required" });
+  try {
+    console.log(req.body.email);
+    if (!req.body.email)
+      return res.status(400).json({ message: "email is required" });
+    if (!req.body.email.includes("@"))
+      return res.status(400).json({ message: "invalid email" });
+    if (!req.body.password)
+      return res.status(400).json({ message: "password is required" });
 
-  // res.send('login Success')
-  res.json({
-    message: "login success",
-    data: req.body,
-  });
+    // res.send('login Success')
+    res.json({
+      message: "login success",
+      data: req.body,
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
 };
 
 // GetUser
