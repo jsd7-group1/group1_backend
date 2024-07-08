@@ -72,12 +72,7 @@ const registerController = async (req, res, next) => {
       access_token: accessToken,
     });
   } catch (error) {
-    console.log("Error", error);
-    res.status(error.status).json({
-      message: error.message,
-      status: error.status,
-      name: error.name,
-    });
+    next(error);
   }
 };
 
@@ -98,7 +93,7 @@ const loginController = async (req, res) => {
       data: req.body,
     });
   } catch (error) {
-    console.log("Error", error);
+    next(error);
   }
 };
 
