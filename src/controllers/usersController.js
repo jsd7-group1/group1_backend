@@ -2,6 +2,7 @@ import NotFoundError from "../error/NotFoundError.js";
 import User from "../../models/user.model.js";
 import { hashPassword } from "../utils/hash.js";
 import { sign } from "../utils/token.js";
+import BadRequestError from "../error/BadRequestError.js";
 
 // Register Contrller
 const registerController = async (req, res, next) => {
@@ -19,22 +20,19 @@ const registerController = async (req, res, next) => {
     } = req.body;
 
     // Validation
-    if (!email) {
-      // return res.status(400).json({ message: "email is required" });
-      throw Error("email is requrired!");
-    }
-    if (!email.includes("@"))
-      return res.status(400).json({ message: "invalid email" });
-    if (!fullName)
-      return res.status(400).json({ meesage: "fullName is required" });
+    if (!email) throw new BadRequestError("Email is required!!!");
+    if (!email.includes("@")) throw new BadRequestError("Invalid email");
+    if (!fullName) throw new BadRequestError("fullName is required");
     if (!password || !confirmPassword)
-      return res
-        .status(400)
-        .json({ message: "password or confirmPassword is required" });
+      throw new BadRequestError("password or confirmPassword is required");
     if (password !== confirmPassword)
-      return res.status(400).json({ message: "confirmPassword Not Match" });
-    if (!imageUrl)
-      return res.status(400).json({ message: "ImageUrl is required" });
+      throw new BadRequestError("confirmPassword Not Match");
+    if (!imageUrl) throw new BadRequestError("ImageUrl is required");
+    if (!companyID) throw new BadRequestError("CompanyID is requred");
+    if (!status) throw new BadRequestError("Status is required");
+    if (!userType) throw new BadRequestError("UserType is required");
+    if (!createdByUserID)
+      throw new BadRequestError("createdByUserID is required");
 
     // 2.เช็ค user ซ้ำ (Mongoose)
     const oldUser = await User.findOne({ email: req.body.email });
@@ -75,7 +73,11 @@ const registerController = async (req, res, next) => {
     });
   } catch (error) {
     console.log("Error", error);
-    res.status(400).send(error.meesage);
+    res.status(error.status).json({
+      message: error.message,
+      status: error.status,
+      name: error.name,
+    });
   }
 };
 
