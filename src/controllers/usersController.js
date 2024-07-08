@@ -44,6 +44,9 @@ const registerController = async (req, res, next) => {
     const hashedPassword = await hashPassword(password);
 
     // 4.สร้าง User
+    // isActive = true  หมายถึง เปิดใช้งานไปแล้ว (Q : สมัครแล้วถือว่าเปิดใช้งาน ?)
+    // isActive = false หมายถึง account ถูก deactivate (ต้องสมัครใหม่)
+
     const user = await User.create({
       fullName: fullName,
       email: email,
@@ -78,6 +81,7 @@ const registerController = async (req, res, next) => {
 
 // Login
 const loginController = async (req, res) => {
+  // ถ้า isActive = false จะไม่ให้ login
   try {
     console.log(req.body.email);
     if (!req.body.email)
