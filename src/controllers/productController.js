@@ -22,7 +22,7 @@ const getProductByCategory = async (req,res,next)=>{
             return next(new NotFoundError("No Category"))
         }
         const products = await Product.find({ catagoryID : catagoryID})
-        res.status(200).json({products})
+        res.status(200).json({message: "success", data: products})
 
     } catch (error) {
         next(error)

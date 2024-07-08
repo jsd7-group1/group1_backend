@@ -11,6 +11,6 @@ router.get('/', ProductController.getAllProduct);
 router.get('/:categoryID', ProductController.getProductByCategory);
 
 //API add product to orders
-router.post('/:productID',authenticateMiddleware , ProductController.addToCart);
+router.post('/:add-to-cart',authenticateMiddleware , ProductController.addToCart);
 
 export default router;
