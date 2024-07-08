@@ -15,8 +15,8 @@ import errorMiddleware from "./src/middleware/errorMiddleware.js";
 // Set up mongoose connection to MongoDB
 import mongoose from "mongoose";
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
 });
 mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB 🥭");
@@ -58,8 +58,8 @@ const PORT = process.env.PORT || 8081;
 const app = express();
 
 // use jwt and token to authenticate access to protected routes
-import jwt from "jsonwebtoken";
-import { authenticateToken } from "./utilities.js";
+// import jwt from "jsonwebtoken";
+// import { authenticateToken } from "./utilities.js";
 
 app.use(express.json());
 app.use(
@@ -72,8 +72,8 @@ app.get("/", (req, res) => {
   res.json({ data: "respond received from the server!" });
 });
 
-app.use('/api/products', productRoute);
-app.use('/api/orders', orderRoute);
+app.use('/products', productRoute);
+app.use('/orders', orderRoute);
 
 app.use(errorMiddleware);
 
@@ -82,7 +82,7 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} ☕️`);
 });
-// API EndPoint
+// API EndPoint 
 // app.post("/register", async (req, res) => {});
 // app.post("/login", async (req, res) => {});
 // app.get("/users", async (req, res) => {});

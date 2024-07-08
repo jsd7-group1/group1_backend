@@ -17,13 +17,12 @@ const getOrder = async(req,res,next)=>{
 // Get Order by UserID
 const getOrderByID = async(req,res,next)=>{
     try {
-        const { userID } = req.params;
-        const orders = await Order.findOne({ userID: userID});
+        const { userID } = req.user._id;
+        const orders = await Order.findOne({ userID: userID });
         if(!orders){
-            return next(new NotFoundError('No orders found, you must add item to cart'));
-        } else{
-            res.status(200).json(orders)
+            return next(new NotFoundError('No orders found'));
         }
+        res.status(200).json(orders)
     } catch (error) {
         next(error)
     }
