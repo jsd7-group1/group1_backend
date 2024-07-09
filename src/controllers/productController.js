@@ -3,8 +3,8 @@ import Product from '../../models/product.model.js';
 import Order from '../../models/order.model.js';
 import OrderDetail from '../../models/orderDetails.model.js';
 import mongoose from 'mongoose';
-// api Get all product
 
+// api Get all product
 const getAllProduct = async (req,res,next)=>{
     try {
         const products = await Product.find();
@@ -58,7 +58,11 @@ const addToCart = async (req,res,next)=>{
         let orderDetail = await OrderDetail.findOneAndUpdate(
             { 
                 orderID: order.orderID,
-                productID: product.productID, 
+                productID: product._id, 
+                productName: product.productName,
+                price: product.price,
+                vat:0,
+
             },
             { $inc: { quantity: 1 } },
             { new: true, upsert: true }
@@ -68,13 +72,17 @@ const addToCart = async (req,res,next)=>{
         }
 
         const orderDetails = await OrderDetail.find({ orderID: order.orderID}).populate('productID');
+           if(!order.orderDetails.includes(orderDetail._id)){
+                order.orderDetails.push(orderDetail._id);
+                await order.save();
+            }
         res.status(201).json({ order, 
             orderDetails: orderDetails.map(detail =>({
                 productID: productID,
                 productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.imageUrl,
+                imageUrl: detail.imageUrl
             }))
         })
         
