@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const sign = (payload) => {
   try {
-    return jwt.sign(payload, process.env.JWT_SECRET, {
+    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1d",
     });
   } catch (error) {
@@ -13,7 +13,7 @@ const sign = (payload) => {
 
 const verify = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
     console.error("Verifying Error", error);
     throw new Error("Token verification failed");

@@ -17,8 +17,9 @@ const getOrder = async(req,res,next)=>{
 // Get Order by UserID
 const getOrderByID = async(req,res,next)=>{
     try {
-        const { userID } = req.user._id;
-        const orders = await Order.findOne({ userID: userID });
+        const  userID  = req.user._id;
+        const orders = await Order.find({userID}).populate({ path: 'orderDetails.productID', options: { strictPopulate: false } });
+        console.log('Retrieved orders:', orders);
         if(!orders){
             return next(new NotFoundError('No orders found'));
         }

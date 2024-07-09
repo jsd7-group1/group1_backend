@@ -32,50 +32,49 @@ const getProductByCategory = async (req,res,next)=>{
 // api Add Product to order
 const addToCart = async (req,res,next)=>{
     try {
-        const productID = req.body;
+        const {productID} = req.body;
         const userID = req.user._id
         const product = await Product.findById(productID);
         if(!product){
             return next (new NotFoundError('Product not found'))
         }
-        const order = await Order.findOne({ userID });
+        let order = await Order.findOne({ userID });
         if(!order){
             order = new Order({
                 userID: userID,
                 orderID: new mongoose.Types.ObjectId(),
-                customerName:'',
+                customerName:`User ${userID}`,
                 subTotal: 0,
                 vat: 0,
-                purchaseDate: null,
-                createdBy: userID,
-                shippingAddress: '',
-                contact: '',
-                zipcode: '',
+                purchaseDate: Date.now(),
+                createdBy: 1,
+                shippingAddress: 'Default',
+                contact: '0000000000',
+                zipCode: '00000',
+                status: 'Pending',
             })
+            await order.save();
         };
-        await order.save();
-        let orderDetail = OrderDetail.find({ orderID: order._id}).populate('productID');
-        if(orderDetail){
-            orderDetail.quantity += quantity;
-        } else {
-            orderDetail = new OrderDetail({
+        let orderDetail = await OrderDetail.findOneAndUpdate(
+            { 
                 orderID: order.orderID,
-                productID: product._id,
-                quantity:1,
-                price: product.price,
-                vat: 0
-            })
+                productID: product.productID, 
+            },
+            { $inc: { quantity: 1 } },
+            { new: true, upsert: true }
+        ).populate('productID');
+        if (!orderDetail) {
+            throw new Error('Failed to update or create order detail');
         }
-        await orderDetail.save();
 
-        const orderDetails = await OrderDetail.find({ orderID: order._id}).populate('productID');
+        const orderDetails = await OrderDetail.find({ orderID: order.orderID}).populate('productID');
         res.status(201).json({ order, 
             orderDetails: orderDetails.map(detail =>({
-                productID: detail.productID._id,
-                productName: detail.productID.productName,
+                productID: productID,
+                productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl:detail.productID.imageUrl,
+                imageUrl: detail.imageUrl,
             }))
         })
         
