@@ -5,12 +5,12 @@ import authenticateMiddleware from '../middleware/authenticateMiddleware.js';
 const router = express.Router();
 
 // API Get order
-router.get('/orders', authenticateMiddleware, OrderController.getOrder);
+router.get('/',  OrderController.getOrder);
 
 // API Get order by ID
-router.get('/orders/:userID', authenticateMiddleware, OrderController.getOrderByID);
+router.get('/user',authenticateMiddleware, OrderController.getOrderByID);
 
 //API add product to orders
-router.delete('/orders/:productID', authenticateMiddleware, OrderController.deleteProductFromOrder);
+router.delete('/deleteProduct',authenticateMiddleware , OrderController.deleteProductFromOrder);
 
 export default router;

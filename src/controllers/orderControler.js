@@ -17,13 +17,12 @@ const getOrder = async(req,res,next)=>{
 // Get Order by UserID
 const getOrderByID = async(req,res,next)=>{
     try {
-        const { userID } = req.params;
-        const orders = await Order.findOne({ userID: userID});
+        const { userID } = req.user._id;
+        const orders = await Order.findOne({ userID: userID });
         if(!orders){
-            return next(new NotFoundError('No orders found, you must add item to cart'));
-        } else{
-            res.status(200).json(orders)
+            return next(new NotFoundError('No orders found'));
         }
+        res.status(200).json(orders)
     } catch (error) {
         next(error)
     }
@@ -32,20 +31,20 @@ const getOrderByID = async(req,res,next)=>{
 // Delete Product from order
 const deleteProductFromOrder = async(req,res,next)=>{
     try {
-        const {orderID, productID} = req.params;
+        const {orderID, productID} = req.body;
         if(!orderID){
             return next(new NotFoundError('Order not found!'))
         }
-        const orderDetail = await orderDetail.findOne({ orderID: orderID, productID: productID});
-        if(!orderDetail){
+        const OrderDetail = await orderDetail.findOne({ orderID: orderID, productID: productID});
+        if(!OrderDetail){
             return next(new NotFoundError('Product not found!'))
         }
-        await orderDetail.findByIdAndDelete(orderDetail._id)
+        await OrderDetail.findByIdAndDelete(orderDetail.productID)
         const updateOrder = await Order.findById(orderID).populate({
             path: 'orderDetails',
             populate: { path: 'productID'}
         });
-        res.status(200).json(updateOrder);
+        res.status(201).json(updateOrder);
 
     } catch (error) {
         next(error)

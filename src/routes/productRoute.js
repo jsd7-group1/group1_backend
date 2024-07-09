@@ -5,12 +5,12 @@ import authenticateMiddleware from '../middleware/authenticateMiddleware.js';
 const router = express.Router();
 
 // API Get all products
-router.get('/products', ProductController.getAllProduct);
+router.get('/', ProductController.getAllProduct);
 
 //API Get product by category
-router.get('/products/category/:categoryID', ProductController.getProductByCategory);
+router.get('/:categoryID', ProductController.getProductByCategory);
 
 //API add product to orders
-router.post('/products/:productID', authenticateMiddleware, ProductController.addToCart);
+router.post('/:add-to-cart',authenticateMiddleware , ProductController.addToCart);
 
 export default router;
