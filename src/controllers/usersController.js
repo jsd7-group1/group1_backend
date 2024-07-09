@@ -3,6 +3,7 @@ import User from "../../models/user.model.js";
 import { hashPassword } from "../utils/hash.js";
 import { sign } from "../utils/token.js";
 import BadRequestError from "../error/BadRequestError.js";
+import { comparePassword } from "../utils/hash.js";
 
 // Register Contrller
 const registerController = async (req, res, next) => {
@@ -80,7 +81,7 @@ const registerController = async (req, res, next) => {
 };
 
 // Login
-const loginController = async (req, res) => {
+const loginController = async (req, res, next) => {
   // ถ้า isActive = false จะไม่ให้ login
   try {
     console.log(req.body.email);
@@ -104,6 +105,7 @@ const loginController = async (req, res) => {
     res.json({
       message: "login success",
       data: req.body,
+      accessToken: accessToken,
     });
   } catch (error) {
     next(error);
@@ -112,7 +114,10 @@ const loginController = async (req, res) => {
 
 // GetUser
 const getUserController = async (req, res, next) => {
-  res.send("Hi");
+  res.json({
+    message: "get me",
+    data: req.user,
+  });
 };
 
 export { registerController, loginController, getUserController };
