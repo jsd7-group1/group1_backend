@@ -6,7 +6,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 
 // import routes
-import useRoute from "./src/routes/usersRoute.js";
+import userRoute from "./src/routes/usersRoute.js";
 import orderRoute from "./src/routes/orderRoute.js";
 import productRoute from "./src/routes/productRoute.js";
 import errorMiddleware from "./src/middleware/errorMiddleware.js";
@@ -17,7 +17,6 @@ mongoose.connect(process.env.MONGO_URI);
 mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB 🥭");
 });
-
 
 const PORT = process.env.PORT || 8081;
 const app = express();
@@ -33,8 +32,9 @@ app.get("/", (req, res) => {
   res.json({ data: "respond received from the server!" });
 });
 
-app.use('/products', productRoute);
-app.use('/orders', orderRoute);
+app.use("/users", userRoute);
+app.use("/products", productRoute);
+app.use("/orders", orderRoute);
 
 app.use(errorMiddleware);
 
