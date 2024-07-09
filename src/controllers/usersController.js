@@ -84,12 +84,21 @@ const loginController = async (req, res) => {
   // ถ้า isActive = false จะไม่ให้ login
   try {
     console.log(req.body.email);
-    if (!req.body.email)
-      return res.status(400).json({ message: "email is required" });
-    if (!req.body.email.includes("@"))
+    const { email, password } = req.body;
+    if (!email) return res.status(400).json({ message: "email is required" });
+    if (!email.includes("@"))
       return res.status(400).json({ message: "invalid email" });
-    if (!req.body.password)
+    if (!password)
       return res.status(400).json({ message: "password is required" });
+
+    const user = await User.findOne({ email: email });
+    if (!user) throw new BadRequestError("Invalid credentials");
+
+    // Compare password
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) throw new BadRequestError("Invalid credentials");
+
+    const accessToken = sign({ id: user._id, email: user.email });
 
     // res.send('login Success')
     res.json({
