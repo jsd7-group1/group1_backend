@@ -3,8 +3,8 @@ import Product from '../../models/product.model.js';
 import Order from '../../models/order.model.js';
 import OrderDetail from '../../models/orderDetails.model.js';
 import mongoose from 'mongoose';
-// api Get all product
 
+// api Get all product
 const getAllProduct = async (req,res,next)=>{
     try {
         const products = await Product.find();
@@ -32,50 +32,57 @@ const getProductByCategory = async (req,res,next)=>{
 // api Add Product to order
 const addToCart = async (req,res,next)=>{
     try {
-        const productID = req.body;
+        const {productID} = req.body;
         const userID = req.user._id
         const product = await Product.findById(productID);
         if(!product){
             return next (new NotFoundError('Product not found'))
         }
-        const order = await Order.findOne({ userID });
+        let order = await Order.findOne({ userID });
         if(!order){
             order = new Order({
                 userID: userID,
                 orderID: new mongoose.Types.ObjectId(),
-                customerName:'',
+                customerName:`User ${userID}`,
                 subTotal: 0,
                 vat: 0,
-                purchaseDate: null,
-                createdBy: userID,
-                shippingAddress: '',
-                contact: '',
-                zipcode: '',
+                purchaseDate: Date.now(),
+                createdBy: 1,
+                shippingAddress: 'Default',
+                contact: '0000000000',
+                zipCode: '00000',
+                status: 'Pending',
             })
+            await order.save();
         };
-        await order.save();
-        let orderDetail = OrderDetail.find({ orderID: order._id}).populate('productID');
-        if(orderDetail){
-            orderDetail.quantity += quantity;
-        } else {
-            orderDetail = new OrderDetail({
+        let orderDetail = await OrderDetail.findOneAndUpdate(
+            { 
                 orderID: order.orderID,
-                productID: product._id,
-                quantity:1,
+                productID: product._id, 
+                productName: product.productName,
                 price: product.price,
-                vat: 0
-            })
-        }
-        await orderDetail.save();
+                vat:0,
 
-        const orderDetails = await OrderDetail.find({ orderID: order._id}).populate('productID');
+            },
+            { $inc: { quantity: 1 } },
+            { new: true, upsert: true }
+        ).populate('productID');
+        if (!orderDetail) {
+            throw new Error('Failed to update or create order detail');
+        }
+
+        const orderDetails = await OrderDetail.find({ orderID: order.orderID}).populate('productID');
+           if(!order.orderDetails.includes(orderDetail._id)){
+                order.orderDetails.push(orderDetail._id);
+                await order.save();
+            }
         res.status(201).json({ order, 
             orderDetails: orderDetails.map(detail =>({
-                productID: detail.productID._id,
-                productName: detail.productID.productName,
+                productID: productID,
+                productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl:detail.productID.imageUrl,
+                imageUrl: detail.imageUrl
             }))
         })
         

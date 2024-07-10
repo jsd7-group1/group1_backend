@@ -15,6 +15,7 @@ const orderSchema = new Schema({
   contact: { type: String, required: true },
   zipCode: { type: Number, required: true },
   status: { type: String, required: true }, 
+  orderDetails: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderDetails' }]
 });
 
 const Order = mongoose.model('Order', orderSchema);
