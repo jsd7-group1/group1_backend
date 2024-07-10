@@ -3,7 +3,6 @@ dotenv.config();
 // set up express app and cors
 import express from "express";
 import cors from "cors";
-import jwt from "jsonwebtoken";
 
 // import routes
 import userRoute from "./src/routes/usersRoute.js";

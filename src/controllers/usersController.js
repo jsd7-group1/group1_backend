@@ -3,6 +3,8 @@ import User from "../../models/user.model.js";
 import { hashPassword } from "../utils/hash.js";
 import { sign } from "../utils/token.js";
 import BadRequestError from "../error/BadRequestError.js";
+import { comparePassword } from "../utils/hash.js";
+import mongoose from "mongoose";
 
 // Register Contrller
 const registerController = async (req, res, next) => {
@@ -48,6 +50,7 @@ const registerController = async (req, res, next) => {
     // isActive = false หมายถึง account ถูก deactivate (ต้องสมัครใหม่)
 
     const user = await User.create({
+      userID: new mongoose.Types.ObjectId(),
       fullName: fullName,
       email: email,
       password: hashedPassword,
@@ -80,21 +83,31 @@ const registerController = async (req, res, next) => {
 };
 
 // Login
-const loginController = async (req, res) => {
+const loginController = async (req, res, next) => {
   // ถ้า isActive = false จะไม่ให้ login
   try {
     console.log(req.body.email);
-    if (!req.body.email)
-      return res.status(400).json({ message: "email is required" });
-    if (!req.body.email.includes("@"))
+    const { email, password } = req.body;
+    if (!email) return res.status(400).json({ message: "email is required" });
+    if (!email.includes("@"))
       return res.status(400).json({ message: "invalid email" });
-    if (!req.body.password)
+    if (!password)
       return res.status(400).json({ message: "password is required" });
+
+    const user = await User.findOne({ email: email });
+    if (!user) throw new BadRequestError("Invalid credentials");
+
+    // Compare password
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) throw new BadRequestError("Invalid credentials");
+
+    const accessToken = sign({ id: user._id, email: user.email });
 
     // res.send('login Success')
     res.json({
       message: "login success",
       data: req.body,
+      accessToken: accessToken,
     });
   } catch (error) {
     next(error);
@@ -103,7 +116,10 @@ const loginController = async (req, res) => {
 
 // GetUser
 const getUserController = async (req, res, next) => {
-  res.send("Hi");
+  res.json({
+    message: "get me",
+    data: req.user,
+  });
 };
 
 export { registerController, loginController, getUserController };
