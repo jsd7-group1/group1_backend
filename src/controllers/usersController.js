@@ -4,6 +4,7 @@ import { hashPassword } from "../utils/hash.js";
 import { sign } from "../utils/token.js";
 import BadRequestError from "../error/BadRequestError.js";
 import { comparePassword } from "../utils/hash.js";
+import mongoose from "mongoose";
 
 // Register Contrller
 const registerController = async (req, res, next) => {
@@ -49,6 +50,7 @@ const registerController = async (req, res, next) => {
     // isActive = false หมายถึง account ถูก deactivate (ต้องสมัครใหม่)
 
     const user = await User.create({
+      userID: new mongoose.Types.ObjectId(),
       fullName: fullName,
       email: email,
       password: hashedPassword,
