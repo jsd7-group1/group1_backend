@@ -1,6 +1,5 @@
 import Order from '../../models/order.model.js';
 import OrderDetails from '../../models/orderDetails.model.js';
-import Product from '../../models/product.model.js'
 import NotFoundError from '../error/NotFoundError.js';
 
 
@@ -65,16 +64,14 @@ const deleteProductFromOrder = async(req,res,next)=>{
         if(!orderID){
             return next(new NotFoundError('Order not found!'))
         }
-        const OrderDetails = await OrderDetails.findOne({ orderID: orderID, productID: productID});
-        if(!OrderDetails){
+        const orderDetail = await OrderDetails.findOne({ orderID: orderID, productID: productID});
+        if(!orderDetail){
             return next(new NotFoundError('Product not found!'))
         }
-        await OrderDetails.findByIdAndDelete(OrderDetails.productID)
-        const updateOrder = await Order.findById(orderID).populate({
-            path: 'orderDetails',
-            populate: { path: 'productID'}
-        });
-        res.status(201).json(updateOrder);
+        console.log(orderDetail);
+        await OrderDetails.findByIdAndDelete(orderDetail._id)
+
+        res.status(201).json({ message: "Delete Success!" });
 
     } catch (error) {
         next(error)
