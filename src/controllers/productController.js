@@ -19,11 +19,11 @@ const getAllProduct = async (req,res,next)=>{
 //api Get product by Categories
 const getProductByCategory = async (req,res,next)=>{
     try {
-        const catagoryID = req.params.catagoryID
-        if(!catagoryID){
+        const categoryID = req.params.categoryID
+        if(!categoryID){
             return next(new NotFoundError("No Category"))
         }
-        const products = await Product.find({ catagoryID : catagoryID})
+        const products = await Product.find({ categoryID : categoryID})
         res.status(200).json({message: "success", data: products})
 
     } catch (error) {
