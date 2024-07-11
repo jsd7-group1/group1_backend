@@ -116,7 +116,10 @@ const loginController = async (req, res, next) => {
 
 // GetUser
 const getUserController = async (req, res, next) => {
-  res.send("Hi");
+  res.json({
+    message: "get me",
+    data: req.user,
+  });
 };
 
 export { registerController, loginController, getUserController };
