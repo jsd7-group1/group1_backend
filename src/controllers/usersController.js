@@ -13,11 +13,11 @@ const registerController = async (req, res, next) => {
       fullName,
       password,
       confirmPassword,
-      imageUrl,
-      companyID,
-      status,
-      userType,
-      createdByUserID,
+      // imageUrl,
+      // companyID,
+      // status,
+      // userType,
+      // createdByUserID,
     } = req.body;
 
     // Validation
@@ -28,12 +28,12 @@ const registerController = async (req, res, next) => {
       throw new BadRequestError("password or confirmPassword is required");
     if (password !== confirmPassword)
       throw new BadRequestError("confirmPassword Not Match");
-    if (!imageUrl) throw new BadRequestError("ImageUrl is required");
-    if (!companyID) throw new BadRequestError("CompanyID is requred");
-    if (!status) throw new BadRequestError("Status is required");
-    if (!userType) throw new BadRequestError("UserType is required");
-    if (!createdByUserID)
-      throw new BadRequestError("createdByUserID is required");
+    // if (!imageUrl) throw new BadRequestError("ImageUrl is required");
+    // if (!companyID) throw new BadRequestError("CompanyID is requred");
+    // if (!status) throw new BadRequestError("Status is required");
+    // if (!userType) throw new BadRequestError("UserType is required");
+    // if (!createdByUserID)
+    //   throw new BadRequestError("createdByUserID is required");
 
     // 2.เช็ค user ซ้ำ (Mongoose)
     const oldUser = await User.findOne({ email: req.body.email });
@@ -53,11 +53,11 @@ const registerController = async (req, res, next) => {
       fullName: fullName,
       email: email,
       password: hashedPassword,
-      imageUrl: imageUrl,
-      createdByUserID: createdByUserID,
-      companyID: companyID,
-      status: status,
-      userType: userType,
+      imageUrl: "-",
+      createdByUserID: new mongoose.Types.ObjectId(),
+      companyID: 1,
+      status: 1,
+      userType: 1,
       isDelete: false,
       isActive: true,
     });
