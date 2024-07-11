@@ -1,7 +1,7 @@
 import Order from '../../models/order.model.js';
 import OrderDetails from '../../models/orderDetails.model.js';
 import NotFoundError from '../error/NotFoundError.js';
-
+import Category from '../../models/category.model.js';
 
 // Get order
 const getOrder = async(req,res,next)=>{
@@ -20,7 +20,14 @@ const getOrderByID = async (req, res, next) => {
 
         const orders = await Order.find({ userID }).populate({
             path: 'orderDetails',
-            populate: { path: 'productID', model: 'Product' },
+            populate: {
+                path: 'productID',
+                model: 'Product' ,
+                populate:{
+                    path: 'categoryID',
+                    model: 'Category'
+                }
+            },
         });
         if (!orders) {
             return next(new NotFoundError('No orders found'));
@@ -44,7 +51,7 @@ const getOrderByID = async (req, res, next) => {
                 price: detail.price,
                 quantity: detail.quantity,
                 imageUrl: detail.productID.imageUrl,
-                type: detail.productID.description // ขอใส่ประเภทสินค้าไว้ใน description ด้วยได้มั้ยครับ เพราะจะส่งให้ frontEnd ใช้ง่ายกว่า 
+                type: detail.productID.categoryID.categoryName 
             })),
         }));
 
@@ -64,6 +71,7 @@ const deleteProductFromOrder = async(req,res,next)=>{
         if(!orderID){
             return next(new NotFoundError('Order not found!'))
         }
+        console.log("Received orderID and productID:", orderID, productID);
         const orderDetail = await OrderDetails.findOne({ orderID: orderID, productID: productID});
         if(!orderDetail){
             return next(new NotFoundError('Product not found!'))

@@ -3,6 +3,8 @@ import Product from '../../models/product.model.js';
 import Order from '../../models/order.model.js';
 import OrderDetail from '../../models/orderDetails.model.js';
 import mongoose from 'mongoose';
+import Category from '../../models/category.model.js';
+
 
 // api Get all product
 const getAllProduct = async (req,res,next)=>{
@@ -71,7 +73,12 @@ const addToCart = async (req,res,next)=>{
             throw new Error('Failed to update or create order detail');
         }
 
-        const orderDetails = await OrderDetail.find({ orderID: order.orderID}).populate('productID');
+        const orderDetails = await OrderDetail.find({ orderID: order.orderID}).populate({
+            path: 'productID',
+            populate:{
+                path: 'categoryID'
+            }
+        });
            if(!order.orderDetails.includes(orderDetail._id)){
                 order.orderDetails.push(orderDetail._id);
                 await order.save();
@@ -82,7 +89,8 @@ const addToCart = async (req,res,next)=>{
                 productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.imageUrl
+                imageUrl: detail.imageUrl,
+                type: detail.productID.categoryID ? detail.productID.categoryID.categoryName : 'Uncategorized'
             }))
         })
         
