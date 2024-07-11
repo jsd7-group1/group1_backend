@@ -94,7 +94,7 @@ const loginController = async (req, res, next) => {
     if (!password)
       return res.status(400).json({ message: "password is required" });
 
-  
+
     const user = await User.findOne({ email: email});
     if (!user) throw new BadRequestError('Invalid credentials');
 
@@ -107,7 +107,7 @@ const loginController = async (req, res, next) => {
     res.json({
       message: "login success",
       data: user,
-      access_token: accessToken, // ใช้เพื่อ test API 
+      access_token: accessToken, // ใช้เพื่อ test API
     });
   } catch (error) {
     next(error);
