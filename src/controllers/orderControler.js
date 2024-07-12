@@ -1,8 +1,7 @@
 import Order from '../../models/order.model.js';
-import orderDetail from '../../models/orderDetails.model.js';
-import Product from '../../models/product.model.js'
+import OrderDetails from '../../models/orderDetails.model.js';
 import NotFoundError from '../error/NotFoundError.js';
-
+import Category from '../../models/category.model.js';
 
 // Get order
 const getOrder = async(req,res,next)=>{
@@ -15,18 +14,55 @@ const getOrder = async(req,res,next)=>{
 };
 
 // Get Order by UserID
-const getOrderByID = async(req,res,next)=>{
+const getOrderByID = async (req, res, next) => {
     try {
-        const { userID } = req.user._id;
-        const orders = await Order.findOne({ userID: userID });
-        if(!orders){
+        const userID = req.user._id;
+
+        const orders = await Order.find({ userID }).populate({
+            path: 'orderDetails',
+            populate: {
+                path: 'productID',
+                model: 'Product' ,
+                populate:{
+                    path: 'categoryID',
+                    model: 'Category'
+                }
+            },
+        });
+        if (!orders) {
             return next(new NotFoundError('No orders found'));
         }
-        res.status(200).json(orders)
+        const formattedOrders = orders.map(order => ({
+            _id: order._id,
+            userID: order.userID,
+            orderID: order.orderID,
+            customerName: order.customerName,
+            subTotal: order.subTotal,
+            vat: order.vat,
+            purchaseDate: order.purchaseDate,
+            createdBy: order.createdBy,
+            shippingAddress: order.shippingAddress,
+            contact: order.contact,
+            zipCode: order.zipCode,
+            status: order.status,
+            orderDetails: order.orderDetails.map(detail => ({
+                productID: detail.productID._id,
+                productName: detail.productID.productName,
+                price: detail.price,
+                quantity: detail.quantity,
+                imageUrl: detail.productID.imageUrl,
+                type: detail.productID.categoryID.categoryName 
+            })),
+        }));
+
+        res.status(200).json(formattedOrders);
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
+
+
 
 // Delete Product from order
 const deleteProductFromOrder = async(req,res,next)=>{
@@ -35,16 +71,15 @@ const deleteProductFromOrder = async(req,res,next)=>{
         if(!orderID){
             return next(new NotFoundError('Order not found!'))
         }
-        const OrderDetail = await orderDetail.findOne({ orderID: orderID, productID: productID});
-        if(!OrderDetail){
+        console.log("Received orderID and productID:", orderID, productID);
+        const orderDetail = await OrderDetails.findOne({ orderID: orderID, productID: productID});
+        if(!orderDetail){
             return next(new NotFoundError('Product not found!'))
         }
-        await OrderDetail.findByIdAndDelete(orderDetail.productID)
-        const updateOrder = await Order.findById(orderID).populate({
-            path: 'orderDetails',
-            populate: { path: 'productID'}
-        });
-        res.status(201).json(updateOrder);
+        console.log(orderDetail);
+        await OrderDetails.findByIdAndDelete(orderDetail._id)
+
+        res.status(201).json({ message: "Delete Success!" });
 
     } catch (error) {
         next(error)
