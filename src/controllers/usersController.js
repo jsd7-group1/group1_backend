@@ -103,6 +103,7 @@ const loginController = async (req, res, next) => {
     if (!isMatch) throw new BadRequestError('Invalid credentials');
 
     const accessToken = sign({ id: user._id, email: user.email });
+    console.log(accessToken); // For add item
     // res.send('login Success')
     res.json({
       message: "login success",
