@@ -61,9 +61,10 @@ const addToCart = async (req,res,next)=>{
             { 
                 orderID: order.orderID,
                 productID: product._id, 
-                // productName: product.productName,
-                // price: product.price,
-                // vat:0,
+                productName: product.productName,
+                price: product.price,
+                vat:0,
+                imgUrl: product.imgUrl
             },
             { $inc: { quantity: 1 } },
             { new: true, upsert: true }
@@ -88,7 +89,7 @@ const addToCart = async (req,res,next)=>{
                 productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.imageUrl,
+                imgUrl: detail.productID.imgUrl,
                 type: detail.productID.categoryID ? detail.productID.categoryID.categoryName : 'Uncategorized'
             }))
         })
