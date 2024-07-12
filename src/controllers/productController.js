@@ -34,13 +34,13 @@ const getProductByCategory = async (req,res,next)=>{
 // api Add Product to order
 const addToCart = async (req,res,next)=>{
     try {
-        const {productID} = req.body;
+        const {productID} = req.body; //ORDERID
         const userID = req.user._id
         const product = await Product.findById(productID);
         if(!product){
             return next (new NotFoundError('Product not found'))
         }
-        let order = await Order.findOne({ userID });
+        let order = await Order.findOne({ userID }); //filter status
         if(!order){
             order = new Order({
                 userID: userID,
@@ -61,10 +61,9 @@ const addToCart = async (req,res,next)=>{
             { 
                 orderID: order.orderID,
                 productID: product._id, 
-                productName: product.productName,
-                price: product.price,
-                vat:0,
-
+                // productName: product.productName,
+                // price: product.price,
+                // vat:0,
             },
             { $inc: { quantity: 1 } },
             { new: true, upsert: true }
