@@ -50,7 +50,7 @@ const getOrderByID = async (req, res, next) => {
                 productName: detail.productID.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.productID.imageUrl,
+                imgUrl: detail.productID.imgUrl,
                 type: detail.productID.categoryID.categoryName 
             })),
         }));

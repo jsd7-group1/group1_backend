@@ -9,6 +9,7 @@ const orderDetailsSchema = new Schema(
     productName: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
+    imgUrl: { type: String },
     vat: { type: Number, required: true },
   },
   // Specify collection name
