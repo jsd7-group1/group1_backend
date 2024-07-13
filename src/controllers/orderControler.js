@@ -62,8 +62,6 @@ const getOrderByID = async (req, res, next) => {
     }
 };
 
-
-
 // Delete Product from order
 const deleteProductFromOrder = async(req,res,next)=>{
     try {
@@ -86,4 +84,32 @@ const deleteProductFromOrder = async(req,res,next)=>{
     }
 };
 
-export {getOrder, getOrderByID, deleteProductFromOrder};
+const checkoutOrder = async (req,res,next)=>{
+    try {
+        const userID = req.user._id;
+        const order = await Order.findOne({ userID: userID, status: "Pending"});
+        if(!order){
+            return next(new NotFoundError("No order on pending"));
+        }
+        order.status = "Success";
+        await order.save();
+        const orderDetail = await OrderDetails.findOne({ orderID: order.orderID}).populate({
+            path: "productID",
+            populate:{
+                path: "categoryID"
+            }
+        });
+        if(!orderDetail){
+            return next(new NotFoundError("No product in this order"))
+        }
+        res.status(200).json({
+            order,
+            orderDetail
+        })
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export {getOrder, getOrderByID, deleteProductFromOrder, checkoutOrder};

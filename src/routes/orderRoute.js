@@ -13,4 +13,7 @@ router.get('/user',authenticateMiddleware, OrderController.getOrderByID);
 //API add product to orders
 router.delete('/deleteProduct',authenticateMiddleware , OrderController.deleteProductFromOrder);
 
+//API checkout
+router.post('/checkout',authenticateMiddleware, OrderController.checkoutOrder);
+
 export default router;
