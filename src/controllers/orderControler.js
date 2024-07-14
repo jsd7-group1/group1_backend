@@ -18,7 +18,7 @@ const getOrderByID = async (req, res, next) => {
     try {
         const userID = req.user._id;
 
-        const orders = await Order.find({ userID }).populate({
+        const orders = await Order.find({ userID:userID, status:"Pending" }).populate({
             path: 'orderDetails',
             populate: {
                 path: 'productID',
@@ -86,12 +86,19 @@ const deleteProductFromOrder = async(req,res,next)=>{
 
 const checkoutOrder = async (req,res,next)=>{
     try {
+        const { vat, orderTotal, customerName, contact, address } = req.body;
         const userID = req.user._id;
         const order = await Order.findOne({ userID: userID, status: "Pending"});
         if(!order){
             return next(new NotFoundError("No order on pending"));
         }
         order.status = "Success";
+        order.vat = vat;
+        order.subTotal = orderTotal;
+        order.customerName = customerName;
+        order.contact = contact;
+        order.shippingAddress = address;
+
         await order.save();
         const orderDetail = await OrderDetails.findOne({ orderID: order.orderID}).populate({
             path: "productID",
