@@ -86,7 +86,7 @@ const deleteProductFromOrder = async(req,res,next)=>{
 
 const checkoutOrder = async (req,res,next)=>{
     try {
-        const { vat, orderTotal, customerName, contact, address } = req.body;
+        const { vat, orderTotal, customerName, contact, zipcode, address } = req.body;
         const userID = req.user._id;
         const order = await Order.findOne({ userID: userID, status: "Pending"});
         if(!order){
@@ -97,6 +97,7 @@ const checkoutOrder = async (req,res,next)=>{
         order.subTotal = orderTotal;
         order.customerName = customerName;
         order.contact = contact;
+        order.zipCode = zipcode
         order.shippingAddress = address;
 
         await order.save();
