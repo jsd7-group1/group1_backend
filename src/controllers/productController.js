@@ -58,9 +58,9 @@ const addToCart = async (req,res,next)=>{
             await order.save();
         };
         let orderDetail = await OrderDetail.findOneAndUpdate(
-            { 
+            {
                 orderID: order.orderID,
-                productID: product._id, 
+                productID: product._id,
                 productName: product.productName,
                 price: product.price,
                 vat:0,
@@ -83,7 +83,7 @@ const addToCart = async (req,res,next)=>{
                 order.orderDetails.push(orderDetail._id);
                 await order.save();
             }
-        res.status(201).json({ order, 
+        res.status(201).json({ order,
             orderDetails: orderDetails.map(detail =>({
                 productID: productID,
                 productName: detail.productName,
@@ -93,7 +93,6 @@ const addToCart = async (req,res,next)=>{
                 type: detail.productID.categoryID ? detail.productID.categoryID.categoryName : 'Uncategorized'
             }))
         })
-        
     } catch (error) {
         next(error)
     }
