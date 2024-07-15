@@ -40,7 +40,7 @@ const addToCart = async (req,res,next)=>{
         if(!product){
             return next (new NotFoundError('Product not found'))
         }
-        let order = await Order.findOne({ userID }); //filter status
+        let order = await Order.findOne({ userID: userID, status: "Pending"}); //filter status
         if(!order){
             order = new Order({
                 userID: userID,
