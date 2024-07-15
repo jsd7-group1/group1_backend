@@ -9,7 +9,7 @@ import Category from '../../models/category.model.js';
 // api Get all product
 const getAllProduct = async (req,res,next)=>{
     try {
-        const products = await Product.find();
+        const products = await Product.find().populate('categoryID', 'categoryName');
         res.status(200).json({message:"success",data: products});
     } catch (error) {
         next(error)
@@ -23,7 +23,7 @@ const getProductByCategory = async (req,res,next)=>{
         if(!categoryID){
             return next(new NotFoundError("No Category"))
         }
-        const products = await Product.find({ categoryID : categoryID})
+        const products = await Product.find({ categoryID : categoryID}).populate('categoryID', 'categoryName');
         res.status(200).json({message: "success", data: products})
 
     } catch (error) {
@@ -40,7 +40,7 @@ const addToCart = async (req,res,next)=>{
         if(!product){
             return next (new NotFoundError('Product not found'))
         }
-        let order = await Order.findOne({ userID }); //filter status
+        let order = await Order.findOne({ userID: userID, status: "Pending"}); //filter status
         if(!order){
             order = new Order({
                 userID: userID,
@@ -61,9 +61,10 @@ const addToCart = async (req,res,next)=>{
             { 
                 orderID: order.orderID,
                 productID: product._id, 
-                // productName: product.productName,
-                // price: product.price,
-                // vat:0,
+                productName: product.productName,
+                price: product.price,
+                vat:0,
+                imgUrl: product.imgUrl
             },
             { $inc: { quantity: 1 } },
             { new: true, upsert: true }
@@ -88,7 +89,7 @@ const addToCart = async (req,res,next)=>{
                 productName: detail.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.imageUrl,
+                imgUrl: detail.productID.imgUrl,
                 type: detail.productID.categoryID ? detail.productID.categoryID.categoryName : 'Uncategorized'
             }))
         })

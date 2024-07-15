@@ -18,7 +18,7 @@ const getOrderByID = async (req, res, next) => {
     try {
         const userID = req.user._id;
 
-        const orders = await Order.find({ userID }).populate({
+        const orders = await Order.find({ userID:userID, status:"Pending" }).populate({
             path: 'orderDetails',
             populate: {
                 path: 'productID',
@@ -50,7 +50,7 @@ const getOrderByID = async (req, res, next) => {
                 productName: detail.productID.productName,
                 price: detail.price,
                 quantity: detail.quantity,
-                imageUrl: detail.productID.imageUrl,
+                imgUrl: detail.productID.imgUrl,
                 type: detail.productID.categoryID.categoryName 
             })),
         }));
@@ -61,8 +61,6 @@ const getOrderByID = async (req, res, next) => {
         next(error);
     }
 };
-
-
 
 // Delete Product from order
 const deleteProductFromOrder = async(req,res,next)=>{
@@ -86,4 +84,40 @@ const deleteProductFromOrder = async(req,res,next)=>{
     }
 };
 
-export {getOrder, getOrderByID, deleteProductFromOrder};
+const checkoutOrder = async (req,res,next)=>{
+    try {
+        const { vat, orderTotal, customerName, contact, zipcode, address } = req.body;
+        const userID = req.user._id;
+        const order = await Order.findOne({ userID: userID, status: "Pending"});
+        if(!order){
+            return next(new NotFoundError("No order on pending"));
+        }
+        order.status = "Success";
+        order.vat = vat;
+        order.subTotal = orderTotal;
+        order.customerName = customerName;
+        order.contact = contact;
+        order.zipCode = zipcode
+        order.shippingAddress = address;
+
+        await order.save();
+        const orderDetail = await OrderDetails.findOne({ orderID: order.orderID}).populate({
+            path: "productID",
+            populate:{
+                path: "categoryID"
+            }
+        });
+        if(!orderDetail){
+            return next(new NotFoundError("No product in this order"))
+        }
+        res.status(200).json({
+            order,
+            orderDetail
+        })
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+export {getOrder, getOrderByID, deleteProductFromOrder, checkoutOrder};
