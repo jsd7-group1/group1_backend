@@ -120,4 +120,53 @@ const checkoutOrder = async (req,res,next)=>{
     }
 };
 
-export {getOrder, getOrderByID, deleteProductFromOrder, checkoutOrder};
+const increaseProductQuantity = async (req, res, next) => {
+    try {
+        const { orderID, productID } = req.body;
+        const order = await Order.findById(orderID).populate({
+            path: 'orderDetails',
+            populate: {
+                path: 'productID',
+                model: 'Product'
+            }
+        });
+        const orderDetail = order.orderDetails.find(detail => detail.productID._id.toString() === productID);
+        if (!orderDetail) {
+            throw new NotFoundError('Product not found in order');
+        }
+        orderDetail.quantity += 1;
+        await orderDetail.save();
+
+        res.status(200).json({ message: 'Product quantity increased'});
+    } catch (error) {
+        next(error);
+    }
+};
+
+const decreaseProductQuantity = async (req, res, next) => {
+    try {
+        const { orderID, productID } = req.body;
+        const order = await Order.findById(orderID).populate({
+            path: 'orderDetails',
+            populate: {
+                path: 'productID',
+                model: 'Product'
+            }
+        });
+        const orderDetail = order.orderDetails.find(detail => detail.productID._id.toString() === productID);
+        if (!orderDetail) {
+            throw new NotFoundError('Product not found in order');
+        }
+        if (orderDetail.quantity > 1) {
+                orderDetail.quantity -= 1;
+                await orderDetail.save();
+                res.status(200).json({ message: 'Product quantity decreased', order });
+        } else {
+            res.status(400).json({ message: 'Product quantity cannot be less than 1' });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export {getOrder, getOrderByID, deleteProductFromOrder, checkoutOrder, increaseProductQuantity, decreaseProductQuantity};
