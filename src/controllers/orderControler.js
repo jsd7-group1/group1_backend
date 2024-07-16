@@ -4,14 +4,24 @@ import NotFoundError from '../error/NotFoundError.js';
 import Category from '../../models/category.model.js';
 
 // Get order
-const getOrder = async(req,res,next)=>{
+const getOrder = async (req, res, next) => {
     try {
-        const orders = await Order.find();
-        res.status(200).json(orders)
+      const orders = await Order.find().populate({
+        path: 'orderDetails',
+        populate: {
+          path: 'productID',
+          model: 'Product',
+          populate: {
+            path: 'categoryID',
+            model: 'Category'
+          }
+        }
+      });
+      res.status(200).json(orders);
     } catch (error) {
-        next(error)
+      next(error);
     }
-};
+  };
 
 // Get Order by UserID
 const getOrderByID = async (req, res, next) => {
