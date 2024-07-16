@@ -16,4 +16,9 @@ router.delete('/deleteProduct',authenticateMiddleware , OrderController.deletePr
 //API checkout
 router.post('/checkout',authenticateMiddleware, OrderController.checkoutOrder);
 
+//API increase quantity
+router.patch('/increase',authenticateMiddleware, OrderController.increaseProductQuantity);
+
+//aAPI decrease qunaity
+router.patch('/decrease',authenticateMiddleware, OrderController.decreaseProductQuantity);
 export default router;

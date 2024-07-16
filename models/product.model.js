@@ -7,11 +7,12 @@ const productSchema = new Schema({
   productName: { type: String, required: true },
   description: { type: String, required: false },
   price: { type: Number, required: true },
+  categoryName: { type: String, required: true },
   categoryID: { type: Schema.Types.ObjectId, ref: "Category", required: true },
   imgUrl: { type: String, required: false },
   costPrice: { type: Number, required: true },
   salePrice: { type: Number, required: true },
-  isFeatured: { type: Number, required: true },
+  isFeatured: { type: Number, required: false },
 });
 
 const Product = mongoose.model('Product', productSchema);
